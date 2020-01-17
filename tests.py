@@ -115,7 +115,8 @@ class TestAll(unittest.TestCase):
 		with self.assertRaisesRegex(IndexError, "pop from an empty RingBuffer"):
 			empty.popleft()
 
-	def __run_2d_tests(self, r):
+	def test_2d(self):
+		r = RingBuffer(5, dtype=(np.float, 2))
 		r.append([1, 2])
 		np.testing.assert_equal(r, np.array([[1, 2]]))
 		self.assertEqual(len(r), 1)
@@ -134,14 +135,6 @@ class TestAll(unittest.TestCase):
 		np.testing.assert_equal(r[0], [5, 6])
 		np.testing.assert_equal(r[0, :], [5, 6])
 		np.testing.assert_equal(r[:, 0], [5, 1, 3])
-
-	def test_2d(self):
-		r = RingBuffer(5, dtype=(np.float, 2))
-		self.__run_2d_tests(r)
-
-	def test_alternative_2d(self):
-		r = RingBuffer((5, 2), dtype=np.float)
-		self.__run_2d_tests(r)
 
 	def test_iter(self):
 		r = RingBuffer(5)
@@ -192,12 +185,12 @@ class TestAll(unittest.TestCase):
 			self.fail()
 
 	def test_1d_column(self):
-		r = RingBuffer((5, 1), dtype=np.int)
+		r = RingBuffer(5, dtype=(np.int, 1))
 		r.append(1)
 		r.append(2)
 		r.appendleft(3)
-		np.testing.assert_equal(r, np.array([[3], [1], [2]]))
 		self.assertEqual(np.shape(r), (3, 1))
+		np.testing.assert_equal(r, np.array([[3], [1], [2]]))
 
 
 if not hasattr(TestAll, 'assertRaisesRegex'):
